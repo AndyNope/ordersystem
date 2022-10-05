@@ -71,7 +71,11 @@ export class HomeComponent implements OnInit {
 
   addQuantity() {
     this.getArticles().push(this.newQuantity());
-    this.getAutocomplete();
+    for (const article of this.getArticles().value) {
+      this.homeService.setAutocomplete(article.name).subscribe(response => {
+        this.getAutocomplete();
+      });
+    }
   }
 
   removeQuantity(i: number) {
