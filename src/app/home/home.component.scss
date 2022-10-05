@@ -43,12 +43,12 @@ form {
     overflow: auto;
 }
 
-.total-output{
+.total-output {
     display: inline;
 }
 
 .add-btn {
-    position: fixed;
+    position: absolute;
     top: 10px;
     right: 10px;
 
@@ -60,8 +60,71 @@ form {
     }
 }
 
-.hidden{
+mat-button-toggle-group.mat-button-toggle-group {
+    top: 0;
+    position: absolute;
+    right: 30px;
+}
+
+.hidden {
     position: absolute;
     left: -1000;
     z-index: -99;
+}
+
+i.fa-sharp.fa-solid.fa-bars {
+    font-size: 24px;
+}
+
+.overview {
+    i.fa-square-xmark {
+        position: fixed;
+        left: 20px;
+        font-size: 24px;
+        top: 10px;
+        color: red;
+    }
+
+
+    background-color: azure;
+    padding: 10px;
+    // padding-top: 40px;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 800px;
+    height: 100vh;
+    overflow: auto;
+
+    &.hide {
+        display: none;
+    }
+
+    .orders-list {
+        padding: 0 20px;
+        margin-top: 30px;
+        max-height: calc(100vh - 50px);
+        overflow: auto;
+    }
+
+    .options {
+        position: absolute;
+        right: 20px;
+
+        i {
+            margin-left: 10px;
+            font-size: 30px;
+            cursor: pointer;
+
+            &.fa-circle-check {
+                color: green;
+            }
+
+            &.fa-ban {
+                color: red;
+            }
+        }
+    }
 }

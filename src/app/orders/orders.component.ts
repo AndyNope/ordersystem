@@ -10,6 +10,7 @@ import { OrderService } from './order.service';
 export class OrdersComponent implements OnInit {
   orders: any;
   counter = 0;
+  revenue = 0;
   constructor(
     private orderService: OrderService,
     private cdRef: ChangeDetectorRef,
@@ -18,7 +19,9 @@ export class OrdersComponent implements OnInit {
 
   ngOnInit(): void {
     this.getOrders();
+    this.getNotCanceledOrders();
     setInterval(() => {
+      this.getNotCanceledOrders();
       this.getOrders();
       if (this.counter < this.orders.lenght) {
         this.snackBar.open('Neue Bestellung ist angekommen!', undefined, {
@@ -30,6 +33,50 @@ export class OrdersComponent implements OnInit {
     }, 30000);
   }
 
+  getDuration(date: Date): string {
+    const eventStartTime = new Date(date);
+    const eventEndTime = new Date();
+    return this.millisToMinutes(eventEndTime.valueOf() - eventStartTime.valueOf());
+  }
+
+  getDurationInt(date: Date): number {
+    const eventStartTime = new Date(date);
+    const eventEndTime = new Date();
+    return this.millisToMinutesInt(eventEndTime.valueOf() - eventStartTime.valueOf());
+  }
+
+  getNotCanceledOrders() {
+    this.revenue = 0;
+    this.orderService.getOrders().subscribe(
+      response => {
+        for (const order of response.body) {
+          order.json = JSON.parse(order.json);
+        }
+        const orders = JSON.parse(JSON.stringify(response.body));
+        for (const order of orders) {
+          for (const article of order.json.articles) {
+            this.revenue += (article.quantity * article.price);
+          }
+        }
+        this.cdRef.detectChanges();
+      }
+    );
+  }
+
+  millisToMinutesAndSeconds(millis: number) {
+    const minutes = Math.floor(millis / 60000);
+    const seconds = ((millis % 60000) / 1000).toFixed(0);
+    return `${minutes}min ${+seconds < 10 ? '0' : ''}${seconds}sek`;
+  }
+  millisToMinutes(millis: number) {
+    const minutes = Math.floor(millis / 60000);
+    return `${minutes}min`;
+  }
+
+  millisToMinutesInt(millis: number) {
+    return Math.floor(millis / 60000);
+  }
+
   getOrders() {
     this.orderService.getOrders().subscribe(
       response => {
@@ -37,20 +84,20 @@ export class OrdersComponent implements OnInit {
           order.json = JSON.parse(order.json);
         }
         this.orders = JSON.parse(JSON.stringify(response.body));
-        // // console.log(response.body);
-        // for (const order of this.orders) {
-        //   // console.log(order);
-        //   for (const article of order.json.articles) {
-        //     // console.log(article.name);
-
-        //   }
-        // }
         if (this.counter === 0) {
           this.counter = this.orders.lenght;
         }
         this.cdRef.detectChanges();
       }
     );
+  }
+
+  getTotalPrice(articles: any): number {
+    let total = 0;
+    for (const article of articles ) {
+      total += article.quantity * article.price;
+    }
+    return total;
   }
 
   cancelOrder(id: number) {

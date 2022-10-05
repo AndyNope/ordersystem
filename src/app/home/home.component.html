@@ -1,14 +1,10 @@
 <form [formGroup]="reactiveForm">
-    <h1>Bestellung:</h1>
+    <i class="fa-sharp fa-solid fa-bars" (click)="toggleOverview = !toggleOverview; getOrders()"></i>
+    <h1>Bestellung<span *ngIf="orderId > 0"> #{{orderId}} bearbeiten</span>: </h1>
     <div formArrayName="articles" class="orderboard">
         <div class="order" *ngFor="let article of getArticles().controls; let i=index" [formGroupName]="i">
             <div class="num">#{{i + 1}}</div>
             <div class="flex-container">
-                <!-- <mat-form-field class="small-input" appearance="fill">
-                    <mat-label>Menge :</mat-label>
-                    <input matInput type="number" min="0" formControlName="quantity" class="form-control"
-                        (keyup)="setTotal(i,+article.value.price * +article.value.quantity)">
-                </mat-form-field> -->
                 <mat-form-field class="small-input" appearance="fill">
                     <mat-label>Menge</mat-label>
                     <mat-select formControlName="quantity">
@@ -39,9 +35,9 @@
                 </mat-form-field>
                 <mat-autocomplete #auto="matAutocomplete">
                     <mat-option *ngFor="let option of options" [value]="option.name">
-                      {{ option.name }}
+                        {{ option.name }}
                     </mat-option>
-                  </mat-autocomplete>
+                </mat-autocomplete>
             </div>
         </div>
     </div>
@@ -49,14 +45,39 @@
         <i class="fa-solid fa-square-plus" (click)="addQuantity()"></i>
     </div>
     <div>
-        <h3 class="total-output">Total: CHF {{ getTotalPrice() | currency:'CHF' | space}}</h3>
+        <h3 class="total-output">Total: {{ getTotalPrice() | currency:'CHF' | space}}</h3>
         <button style="float: right;" type="submit" class="btn btn-success" mat-raised-button
-            [disabled]="getTotalPrice() === 0 || textIsEmpty()" (click)="onSubmit()">Bestellung
-            aufgeben</button>
+            [disabled]="getTotalPrice() === 0 || textIsEmpty()" (click)="onSubmit()">{{orderId > 0
+            ?'Anpassung speichern':'Bestellung aufgeben'}}</button>
     </div>
-
 </form>
-
-<div *ngIf="isLocalhost">
-    {{this.reactiveForm.value | json}}
+<div class="overview" [ngClass]="{'hide': !toggleOverview}">
+    <i class="fa-sharp fa-solid fa-square-xmark" (click)="toggleOverview = !toggleOverview;"></i>
+    <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style" value="current">
+        <mat-button-toggle value="current" (change)="getOrders()">Aktuell</mat-button-toggle>
+        <mat-button-toggle value="finished" (change)="getOldOrders()">Bisher</mat-button-toggle>
+        <mat-button-toggle value="canceled" (change)="getCanceledOrders()">Storniert</mat-button-toggle>
+    </mat-button-toggle-group>
+    <div class="orders-list">
+        <div class="order" *ngFor="let order of orders; let i=index">
+            <h2>Bestellung #{{order.id}}</h2>
+            <span class="label"
+                [ngClass]="{'bg-red': getDurationInt(order.created) }">{{getDuration(order.created)}}</span>
+            <div class="options">
+                <i class="fa-solid fa-gear" [matMenuTriggerFor]="setting"></i>
+                <mat-menu #setting="matMenu">
+                    <button mat-menu-item (click)="editOrder(order.id, order.json)">Bearbeiten</button>
+                    <button mat-menu-item (click)="reuseOrder(order.json)">Erneut verwenden</button>
+                    <button mat-menu-item (click)="terminateOrder(order.id)">Bestellung abhacken</button>
+                    <button mat-menu-item (click)="cancelOrder(order.id)">Stornieren</button>
+                </mat-menu>
+            </div>
+            <div *ngFor="let article of order.json.articles; let j=index">
+                {{article.quantity}} X {{article.name}}
+            </div>
+            <p></p>
+            Total: {{getTotalPriceByArticles(order.json.articles)| currency:' CHF' | space}}
+            <mat-divider></mat-divider>
+        </div>
+    </div>
 </div>

@@ -1,4 +1,33 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+body {
+    max-width: 600px;
+    margin: auto;
+    position: relative;
+}
+
+
+.label {
+    color: white;
+    background-color: rgb(33, 119, 2);
+    border-radius: 20px;
+    padding: 5px;
+    border: 2px solid #000;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.bg-red{
+    background-color: rgb(126, 12, 12);
+}

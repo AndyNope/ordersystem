@@ -27,6 +27,20 @@ export class HomeService {
     );
   }
 
+  editOrder(body: any, id: number): Observable<any> {
+    return this.http.post('https://api.maid-cafe.ch/?mode=editOrder', { json: body, id }, { observe: 'response' }).pipe(
+      map((response: any) => {
+        // console.log(response);
+        if (response !== null) {
+          return response;
+        }
+      }), catchError((error) => {
+        // console.log(error);
+        return error(error);
+      })
+    );
+  }
+
   getAutocomplete(): Observable<any> {
     return this.http.get('https://api.maid-cafe.ch/?mode=getAutocomplete', { observe: 'response' }).pipe(
       map((response: any) => {
@@ -42,7 +56,20 @@ export class HomeService {
   }
 
   setAutocomplete(text: string): Observable<any> {
-    return this.http.post('https://api.maid-cafe.ch/?mode=setAutocomplete', { text }, { observe: 'response' }).pipe(
+    return this.http.post('https://api.maid-cafe.ch/?mode=addAutocomplete', { text }, { observe: 'response' }).pipe(
+      map((response: any) => {
+        if (response !== null) {
+          return response;
+        }
+      }), catchError((error) => {
+        // console.log(error);
+        return error(error);
+      })
+    );
+  }
+
+  removeAutocomplete(id: number): Observable<any> {
+    return this.http.post('https://api.maid-cafe.ch/?mode=removeAutocomplete', { id }, { observe: 'response' }).pipe(
       map((response: any) => {
         if (response !== null) {
           return response;

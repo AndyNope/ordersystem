@@ -17,6 +17,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 
 
@@ -41,7 +42,8 @@ import { MatMenuModule } from '@angular/material/menu';
     FormsModule,
     MatDividerModule,
     MatMenuModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatButtonToggleModule
   ],
   providers: [HomeService, MatSnackBarModule],
   bootstrap: [AppComponent]

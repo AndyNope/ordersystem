@@ -26,6 +26,48 @@ export class OrderService {
       })
     );
   }
+
+  getOldOrders(): Observable<any> {
+    return this.http.get('https://api.maid-cafe.ch/?mode=getOldOrders', { observe: 'response' }).pipe(
+      map((response: any) => {
+        // console.log(response);
+        if (response !== null) {
+          return response;
+        }
+      }), catchError((error) => {
+        // console.log(error);
+        return error(error);
+      })
+    );
+  }
+
+  getCanceledOrders(): Observable<any> {
+    return this.http.get('https://api.maid-cafe.ch/?mode=getCanceledOrders', { observe: 'response' }).pipe(
+      map((response: any) => {
+        // console.log(response);
+        if (response !== null) {
+          return response;
+        }
+      }), catchError((error) => {
+        // console.log(error);
+        return error(error);
+      })
+    );
+  }
+
+  getNotCanceledOrders(): Observable<any> {
+    return this.http.get('https://api.maid-cafe.ch/?mode=getNotCanceledOrders', { observe: 'response' }).pipe(
+      map((response: any) => {
+        // console.log(response);
+        if (response !== null) {
+          return response;
+        }
+      }), catchError((error) => {
+        // console.log(error);
+        return error(error);
+      })
+    );
+  }
   
   cancelOrder(id: number): Observable<any> {
     return this.http.post('https://api.maid-cafe.ch/?mode=deleteOrder', { id }, { observe: 'response' }).pipe(
