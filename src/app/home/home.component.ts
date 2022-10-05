@@ -30,14 +30,16 @@ export class HomeComponent implements OnInit {
   ) {
     this.reactiveForm = this.formBuilder.group({
       articles: this.formBuilder.array([]),
-      total: new FormControl(0)
+      total: new FormControl(0),
+      table: new FormControl(0)
     });
   }
 
   initForm() {
     this.reactiveForm = this.formBuilder.group({
       articles: this.formBuilder.array([]),
-      total: new FormControl(0)
+      total: new FormControl(0),
+      table: new FormControl(0)
     });
   }
 
@@ -93,6 +95,10 @@ export class HomeComponent implements OnInit {
     })
   }
 
+  setTable(table: number) {
+    this.reactiveForm.get('table')?.setValue(table);
+  }
+
   getTotalPrice(): number {
     let total = 0;
     for (const article of this.reactiveForm.get("articles")?.value) {
@@ -135,6 +141,7 @@ export class HomeComponent implements OnInit {
     for (const article of json.articles) {
       this.getArticles().push(this.formBuilder.group(article));
     }
+    this.setTable((json.table !== undefined ? json.table : 0));
     this.toggleOverview = false;
   }
 
@@ -143,6 +150,7 @@ export class HomeComponent implements OnInit {
     for (const article of json.articles) {
       this.getArticles().push(this.formBuilder.group(article));
     }
+    this.setTable((json.table !== undefined ? json.table : 0));
     this.toggleOverview = false;
   }
 
@@ -163,7 +171,8 @@ export class HomeComponent implements OnInit {
           order.json = JSON.parse(order.json);
         }
         this.orders = JSON.parse(JSON.stringify(response.body));
-
+        console.log(this.orders);
+        
       }
     );
   }
@@ -225,16 +234,28 @@ export class HomeComponent implements OnInit {
   onSubmit() {
     this.reactiveForm.get('total')?.setValue(this.getTotalPrice());
     if (this.orderId > 0) {
-      this.homeService.editOrder(this.reactiveForm.value, this.orderId).subscribe(response => { });
+      this.homeService.editOrder(this.reactiveForm.value, this.orderId).subscribe(response => {
+        this.initForm();
+        this.addQuantity();
+        this.getAutocomplete();
+        this.setTable(0);
+        this.orderId = 0;
+      });
       for (const article of this.getArticles().value) {
         this.homeService.setAutocomplete(article.name).subscribe(response => { });
       }
-      this.snackBar.open('Bestellung wurde aufgegeben!', undefined, {
+      this.snackBar.open('Bestellung wurde bearbeitet!', undefined, {
         duration: 2000,
         horizontalPosition: 'right'
       });
     } else {
-      this.homeService.setOrder(this.reactiveForm.value).subscribe(response => { });
+      this.homeService.setOrder(this.reactiveForm.value).subscribe(response => {
+        this.initForm();
+        this.addQuantity();
+        this.getAutocomplete();
+        this.setTable(0);
+        this.orderId = 0;
+      });
       for (const article of this.getArticles().value) {
         this.homeService.setAutocomplete(article.name).subscribe(response => { });
       }
@@ -243,9 +264,5 @@ export class HomeComponent implements OnInit {
         horizontalPosition: 'right'
       });
     }
-    this.initForm();
-    this.addQuantity();
-    this.getAutocomplete();
-    this.orderId = 0;
   }
 }

@@ -1,6 +1,7 @@
 <div class="orders-list">
     <div class="order" *ngFor="let order of orders; let i=index">
         <h2>Bestellung #{{order.id}}</h2>
+        <strong>Tisch: {{ order.json.table === 'undefined'? 0 : order.json.table}}</strong>
         <span class="label" [ngClass]="{'bg-red': getDurationInt(order.created) }">{{getDuration(order.created)}}</span>
         <div class="options">
             <i class="fa-solid fa-gear" [matMenuTriggerFor]="setting"></i>
@@ -14,7 +15,6 @@
         </div>
         <p></p>
         Total: {{getTotalPrice(order.json.articles)| currency:' CHF' | space}}
-        <mat-divider></mat-divider>
     </div>
 </div>
 <div>

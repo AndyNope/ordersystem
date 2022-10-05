@@ -1,6 +1,15 @@
 <form [formGroup]="reactiveForm">
     <i class="fa-sharp fa-solid fa-bars" (click)="toggleOverview = !toggleOverview; getOrders()"></i>
     <h1>Bestellung<span *ngIf="orderId > 0"> #{{orderId}} bearbeiten</span>: </h1>
+    <mat-form-field class="small-input" appearance="fill">
+        <mat-label>Tisch</mat-label>
+        <mat-select formControlName="table">
+            <mat-option *ngFor=" let select of select; let a=index" [value]="a"
+                (click)="setTable(a)">
+                {{a}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
     <div formArrayName="articles" class="orderboard">
         <div class="order" *ngFor="let article of getArticles().controls; let i=index" [formGroupName]="i">
             <div class="num">#{{i + 1}}</div>
@@ -61,6 +70,7 @@
     <div class="orders-list">
         <div class="order" *ngFor="let order of orders; let i=index">
             <h2>Bestellung #{{order.id}}</h2>
+            <strong>Tisch: {{ order.json.table === 'undefined'? 0 : order.json.table}}</strong>
             <span class="label"
                 [ngClass]="{'bg-red': getDurationInt(order.created) }">{{getDuration(order.created)}}</span>
             <div class="options">
@@ -77,7 +87,6 @@
             </div>
             <p></p>
             Total: {{getTotalPriceByArticles(order.json.articles)| currency:' CHF' | space}}
-            <mat-divider></mat-divider>
         </div>
     </div>
 </div>
