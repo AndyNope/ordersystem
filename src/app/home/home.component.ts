@@ -71,6 +71,7 @@ export class HomeComponent implements OnInit {
 
   addQuantity() {
     this.getArticles().push(this.newQuantity());
+    this.getAutocomplete();
   }
 
   removeQuantity(i: number) {
@@ -104,5 +105,6 @@ export class HomeComponent implements OnInit {
     });
     this.initForm();
     this.addQuantity();
+    this.getAutocomplete();
   }
 }
