@@ -1,1 +1,17 @@
-<p>orders works!</p>
+<div class="orders-list">
+    <div class="order" *ngFor="let order of orders; let i=index">
+        <h2>Bestellung #{{order.id}}</h2>
+        <div class="options">
+            <i class="fa-solid fa-gear" [matMenuTriggerFor]="setting"></i>
+            <mat-menu #setting="matMenu">
+                <button mat-menu-item (click)="terminateOrder(order.id)">Bestellung abhacken</button>
+                <button mat-menu-item (click)="cancelOrder(order.id)">Stornieren</button>
+            </mat-menu>
+        </div>
+        <div *ngFor="let article of order.json.articles; let j=index">
+            {{article.quantity}} X {{article.name}}
+        </div>
+        <p></p>
+        <mat-divider></mat-divider>
+    </div>
+</div>

@@ -1,0 +1,19 @@
+.orders-list{
+    padding: 20px;
+}
+
+.options{
+    position: absolute;
+    right: 20px;
+    i{
+        margin-left: 10px;
+        font-size: 30px;
+        cursor: pointer;
+        &.fa-circle-check{
+            color: green;
+        }
+        &.fa-ban{
+            color: red;
+        }
+    }
+}

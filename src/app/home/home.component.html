@@ -1,1 +1,62 @@
-<p>home works!</p>
+<form [formGroup]="reactiveForm">
+    <h1>Bestellung:</h1>
+    <div formArrayName="articles" class="orderboard">
+        <div class="order" *ngFor="let article of getArticles().controls; let i=index" [formGroupName]="i">
+            <div class="num">#{{i + 1}}</div>
+            <div class="flex-container">
+                <!-- <mat-form-field class="small-input" appearance="fill">
+                    <mat-label>Menge :</mat-label>
+                    <input matInput type="number" min="0" formControlName="quantity" class="form-control"
+                        (keyup)="setTotal(i,+article.value.price * +article.value.quantity)">
+                </mat-form-field> -->
+                <mat-form-field class="small-input" appearance="fill">
+                    <mat-label>Menge</mat-label>
+                    <mat-select formControlName="quantity">
+                        <mat-option *ngFor=" let select of select; let a=index" [value]="a"
+                            (click)="setTotal(i,+article.value.price * a)">
+                            {{a}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="small-input" appearance="fill">
+                    <mat-label>Einzelpreis</mat-label>
+                    <mat-select formControlName="price">
+                        <mat-option *ngFor=" let select of select; let a=index" [value]="a * 0.50"
+                            (click)="setTotal(i,+article.value.price * a)">
+                            {{ a * 0.50 | currency:' CHF' | space}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div class="flex-container flex-end">
+                    <i (click)="removeQuantity(i)" class="fa-solid fa-trash"
+                        style="cursor: pointer; color: #9d9d9d; font-size: 30px;"></i>
+                </div>
+            </div>
+            <div>
+                <mat-form-field class="full-width" appearance="fill">
+                    <mat-label>Essware/Getränk:</mat-label>
+                    <input matInput type="text" formControlName="name" class="form-control" [matAutocomplete]="auto">
+                </mat-form-field>
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let option of options" [value]="option.name">
+                      {{ option.name }}
+                    </mat-option>
+                  </mat-autocomplete>
+            </div>
+        </div>
+    </div>
+    <div class="add-btn">
+        <i class="fa-solid fa-square-plus" (click)="addQuantity()"></i>
+    </div>
+    <div>
+        <h3 class="total-output">Total: CHF {{ getTotalPrice() | currency:'CHF' | space}}</h3>
+        <button style="float: right;" type="submit" class="btn btn-success" mat-raised-button
+            [disabled]="getTotalPrice() === 0 || textIsEmpty()" (click)="onSubmit()">Bestellung
+            aufgeben</button>
+    </div>
+
+</form>
+
+<div *ngIf="isLocalhost">
+    {{this.reactiveForm.value | json}}
+</div>

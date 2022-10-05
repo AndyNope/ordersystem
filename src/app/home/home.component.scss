@@ -1,0 +1,67 @@
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.m-10 {
+    margin: 10px;
+}
+
+.flex-end {
+    justify-content: flex-end;
+    // align-items: center;
+}
+
+form {
+    padding: 10px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.small-input {
+    width: 40%;
+}
+
+.order {
+    position: relative;
+    border: 1px solid #00000050;
+    border-radius: 10px;
+    padding: 5px;
+    padding-top: 20px;
+    margin-bottom: 10px;
+}
+
+.num {
+    position: absolute;
+    top: 0;
+}
+
+.orderboard {
+    max-height: calc(100vh - 200px);
+    overflow: auto;
+}
+
+.total-output{
+    display: inline;
+}
+
+.add-btn {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+
+    i {
+        font-size: 64px;
+        cursor: pointer;
+        font-size: 30px;
+        color: green;
+    }
+}
+
+.hidden{
+    position: absolute;
+    left: -1000;
+    z-index: -99;
+}
