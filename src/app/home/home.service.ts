@@ -16,12 +16,12 @@ export class HomeService {
   setOrder(body: any): Observable<any> {
     return this.http.post('https://api.maid-cafe.ch/?mode=setOrder', body, { observe: 'response' }).pipe(
       map((response: any) => {
-        console.log(response);
+        // console.log(response);
         if (response !== null) {
           return response;
         }
       }), catchError((error) => {
-        console.log(error);
+        // console.log(error);
         return error(error);
       })
     );
@@ -48,7 +48,7 @@ export class HomeService {
           return response;
         }
       }), catchError((error) => {
-        console.log(error);
+        // console.log(error);
         return error(error);
       })
     );

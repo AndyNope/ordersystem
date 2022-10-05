@@ -37,14 +37,14 @@ export class OrdersComponent implements OnInit {
           order.json = JSON.parse(order.json);
         }
         this.orders = JSON.parse(JSON.stringify(response.body));
-        console.log(response.body);
-        for (const order of this.orders) {
-          console.log(order);
-          for (const article of order.json.articles) {
-            console.log(article.name);
+        // // console.log(response.body);
+        // for (const order of this.orders) {
+        //   // console.log(order);
+        //   for (const article of order.json.articles) {
+        //     // console.log(article.name);
 
-          }
-        }
+        //   }
+        // }
         if (this.counter === 0) {
           this.counter = this.orders.lenght;
         }
