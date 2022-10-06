@@ -4,8 +4,7 @@
     <mat-form-field class="small-input" appearance="fill">
         <mat-label>Tisch</mat-label>
         <mat-select formControlName="table">
-            <mat-option *ngFor=" let select of select; let a=index" [value]="a"
-                (click)="setTable(a)">
+            <mat-option *ngFor=" let select of select; let a=index" [value]="a" (click)="setTable(a)">
                 {{a}}
             </mat-option>
         </mat-select>
@@ -72,21 +71,22 @@
             <h2>Bestellung #{{order.id}}</h2>
             <strong>Tisch: {{ order.json.table === 'undefined'? 0 : order.json.table}}</strong>
             <span class="label"
-                [ngClass]="{'bg-red': getDurationInt(order.created) > 15 }">{{getDuration(order.created)}}</span>
-            <div class="options">
-                <i class="fa-solid fa-gear" [matMenuTriggerFor]="setting"></i>
-                <mat-menu #setting="matMenu">
-                    <button mat-menu-item (click)="editOrder(order.id, order.json)">Bearbeiten</button>
-                    <button mat-menu-item (click)="reuseOrder(order.json)">Erneut verwenden</button>
-                    <button mat-menu-item (click)="terminateOrder(order.id)">Bestellung abhacken</button>
-                    <button mat-menu-item (click)="cancelOrder(order.id)">Stornieren</button>
-                </mat-menu>
-            </div>
-            <div *ngFor="let article of order.json.articles; let j=index">
-                {{article.quantity}} X {{article.name}}
-            </div>
-            <p></p>
-            Total: {{getTotalPriceByArticles(order.json.articles)| currency:' CHF' | space}}
+                [ngClass]="{'bg-red': getDurationInt(order.created) > 15 }">{{getDurationInt(order.created) < 60 ?
+                    getDuration(order.created) : '>59min' }}</span>
+                    <div class="options">
+                        <i class="fa-solid fa-gear" [matMenuTriggerFor]="setting"></i>
+                        <mat-menu #setting="matMenu">
+                            <button mat-menu-item (click)="editOrder(order.id, order.json)">Bearbeiten</button>
+                            <button mat-menu-item (click)="reuseOrder(order.json)">Erneut verwenden</button>
+                            <button mat-menu-item (click)="terminateOrder(order.id)">Bestellung abhacken</button>
+                            <button mat-menu-item (click)="cancelOrder(order.id)">Stornieren</button>
+                        </mat-menu>
+                    </div>
+                    <div *ngFor="let article of order.json.articles; let j=index">
+                        {{article.quantity}} X {{article.name}}
+                    </div>
+                    <p></p>
+                    Total: {{getTotalPriceByArticles(order.json.articles)| currency:' CHF' | space}}
         </div>
     </div>
 </div>
