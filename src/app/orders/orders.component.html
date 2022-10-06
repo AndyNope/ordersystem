@@ -2,7 +2,7 @@
     <div class="order" *ngFor="let order of orders; let i=index">
         <h2>Bestellung #{{order.id}}</h2>
         <strong>Tisch: {{ order.json.table === 'undefined'? 0 : order.json.table}}</strong>
-        <span class="label" [ngClass]="{'bg-red': getDurationInt(order.created) }">{{getDuration(order.created)}}</span>
+        <span class="label" [ngClass]="{'bg-red': getDurationInt(order.created) > 15 }">{{getDuration(order.created)}}</span>
         <div class="options">
             <i class="fa-solid fa-gear" [matMenuTriggerFor]="setting"></i>
             <mat-menu #setting="matMenu">
