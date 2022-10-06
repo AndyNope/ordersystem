@@ -19,6 +19,7 @@ export class OrdersComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.getScreenLock();
     this.getOrders();
     this.getStornos();
     this.getNotCanceledOrders();
@@ -127,6 +128,16 @@ export class OrdersComponent implements OnInit {
         });
       }
     );
+  }
+
+  async getScreenLock() {
+    let screenLock;
+    try {
+      screenLock = await navigator.wakeLock.request('screen');
+    } catch (err: any) {
+      console.log(err.name, err.message);
+    }
+    return screenLock;
   }
 
   terminateOrder(id: number) {

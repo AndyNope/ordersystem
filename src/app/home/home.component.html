@@ -68,7 +68,7 @@
     <div>
         <h3 class="total-output">Total: {{ getTotalPrice() | currency:'CHF' | space}}</h3>
         <button style="float: right;" type="submit" class="btn btn-success" mat-raised-button
-            [disabled]="(getTotalQuantity() === 0 ) || textIsEmpty() || reactiveForm.value.table > 0"
+            [disabled]="(getTotalQuantity() === 0 ) || textIsEmpty() || reactiveForm.value.table === 0"
             (click)="onSubmit()">{{orderId > 0
             ?'Anpassung speichern':'Bestellung aufgeben'}}</button>
     </div>

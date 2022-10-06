@@ -1,0 +1,11 @@
+<div class="text" *ngFor="let autocomplete of autocompleteList">
+    {{ autocomplete.name }}
+    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" style="float: right;">
+        <i class="fa-solid fa-gears"></i>
+    </button>
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="deleteAutocomplete(autocomplete.id)">
+            Löschen
+        </button>
+    </mat-menu>
+</div>

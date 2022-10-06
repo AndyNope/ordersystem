@@ -21,6 +21,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { AutocompleteComponent } from './autocomplete/autocomplete.component';
+import { OrderService } from './orders/order.service';
+import { AutocompleteService } from './autocomplete/autocomplete.service';
 
 
 @NgModule({
@@ -28,7 +31,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     AppComponent,
     HomeComponent,
     OrdersComponent,
-    SpacePipe
+    SpacePipe,
+    AutocompleteComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +54,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatChipsModule,
     MatSlideToggleModule
   ],
-  providers: [HomeService, MatSnackBarModule],
+  providers: [
+    HomeService, 
+    MatSnackBarModule, 
+    OrderService,
+    AutocompleteService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
