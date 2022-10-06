@@ -47,7 +47,7 @@ export class OrdersComponent implements OnInit {
 
   getNotCanceledOrders() {
     this.revenue = 0;
-    this.orderService.getOrders().subscribe(
+    this.orderService.getNotCanceledOrders().subscribe(
       response => {
         for (const order of response.body) {
           order.json = JSON.parse(order.json);
