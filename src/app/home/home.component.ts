@@ -14,6 +14,7 @@ export class HomeComponent implements OnInit {
 
   isLocalhost = window.location.hostname === 'localhost'
   select = Array(100);
+  tables = Array(25);
   reactiveForm: FormGroup;
   options: any;
   orders: any;
@@ -31,15 +32,27 @@ export class HomeComponent implements OnInit {
     this.reactiveForm = this.formBuilder.group({
       articles: this.formBuilder.array([]),
       total: new FormControl(0),
-      table: new FormControl(0)
+      username: new FormControl(localStorage.getItem('name') !== undefined ? localStorage.getItem('name') : ''),
+      table: new FormControl(1)
     });
+  }
+
+  ngOnInit(): void {
+    this.addQuantity();
+    this.getAutocomplete();
+
+    if (localStorage.getItem('name') !== undefined) {
+      this.reactiveForm.get('username')?.setValue(localStorage.getItem('name'));
+    }
+    this.cdRef.detectChanges();
   }
 
   initForm() {
     this.reactiveForm = this.formBuilder.group({
       articles: this.formBuilder.array([]),
       total: new FormControl(0),
-      table: new FormControl(0)
+      username: new FormControl(localStorage.getItem('name') !== undefined ? localStorage.getItem('name') : ''),
+      table: new FormControl(1)
     });
   }
 
@@ -54,7 +67,7 @@ export class HomeComponent implements OnInit {
     const eventEndTime = new Date();
     return this.millisToMinutesInt(eventEndTime.valueOf() - eventStartTime.valueOf());
   }
-
+  
   millisToMinutesAndSeconds(millis: number) {
     const minutes = Math.floor(millis / 60000);
     const seconds = ((millis % 60000) / 1000).toFixed(0);
@@ -67,11 +80,6 @@ export class HomeComponent implements OnInit {
   millisToMinutesInt(millis: number) {
     return Math.floor(millis / 60000);
   }
-  ngOnInit(): void {
-    this.addQuantity();
-    this.getAutocomplete();
-    this.cdRef.detectChanges();
-  }
 
   getAutocomplete() {
     this.homeService.getAutocomplete().subscribe(
@@ -80,6 +88,10 @@ export class HomeComponent implements OnInit {
       }
     );
 
+  }
+
+  setUsername(event: any) {
+    localStorage.setItem('name', event.target.value);
   }
 
   getArticles(): FormArray {
@@ -91,6 +103,10 @@ export class HomeComponent implements OnInit {
       quantity: 0,
       name: '',
       price: 0,
+      togo: false,
+      extraCream: false,
+      coupon: false,
+      lactoseFree: false,
       total: 0,
     })
   }
@@ -107,6 +123,14 @@ export class HomeComponent implements OnInit {
     return total;
   }
 
+  getTotalQuantity(): number {
+    let total = 0;
+    for (const article of this.reactiveForm.get("articles")?.value) {
+      total += article.quantity;
+    }
+    return total;
+  }
+
   getTotalPriceByArticles(articles: any): number {
     let total = 0;
     for (const article of articles) {
@@ -118,8 +142,6 @@ export class HomeComponent implements OnInit {
   addQuantity() {
     this.getArticles().push(this.newQuantity());
     for (const article of this.getArticles().value) {
-      console.log(article);
-
       this.homeService.setAutocomplete(article.name).subscribe(response => {
         this.getAutocomplete();
       });
@@ -172,7 +194,7 @@ export class HomeComponent implements OnInit {
         }
         this.orders = JSON.parse(JSON.stringify(response.body));
         console.log(this.orders);
-        
+
       }
     );
   }

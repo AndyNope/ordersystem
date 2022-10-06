@@ -9,6 +9,7 @@ import { OrderService } from './order.service';
 })
 export class OrdersComponent implements OnInit {
   orders: any;
+  stornos: any;
   counter = 0;
   revenue = 0;
   constructor(
@@ -19,10 +20,12 @@ export class OrdersComponent implements OnInit {
 
   ngOnInit(): void {
     this.getOrders();
+    this.getStornos();
     this.getNotCanceledOrders();
     setInterval(() => {
       this.getNotCanceledOrders();
       this.getOrders();
+      this.getStornos();
       if (this.counter < this.orders.lenght) {
         this.snackBar.open('Neue Bestellung ist angekommen!', undefined, {
           duration: 2000,
@@ -92,9 +95,21 @@ export class OrdersComponent implements OnInit {
     );
   }
 
+  getStornos() {
+    this.orderService.getCanceledOrders().subscribe(
+      response => {
+        for (const order of response.body) {
+          order.json = JSON.parse(order.json);
+        }
+        this.stornos = JSON.parse(JSON.stringify(response.body));
+        this.cdRef.detectChanges();
+      }
+    );
+  }
+
   getTotalPrice(articles: any): number {
     let total = 0;
-    for (const article of articles ) {
+    for (const article of articles) {
       total += article.quantity * article.price;
     }
     return total;
@@ -104,6 +119,8 @@ export class OrdersComponent implements OnInit {
     this.orderService.cancelOrder(id).subscribe(
       res => {
         this.getOrders();
+        this.getStornos();
+        this.getNotCanceledOrders();
         this.snackBar.open('Bestellung wurde storniert!', undefined, {
           duration: 2000,
           horizontalPosition: 'right'

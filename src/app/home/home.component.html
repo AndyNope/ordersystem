@@ -1,14 +1,21 @@
 <form [formGroup]="reactiveForm">
     <i class="fa-sharp fa-solid fa-bars" (click)="toggleOverview = !toggleOverview; getOrders()"></i>
     <h1>Bestellung<span *ngIf="orderId > 0"> #{{orderId}} bearbeiten</span>: </h1>
-    <mat-form-field class="small-input" appearance="fill">
-        <mat-label>Tisch</mat-label>
-        <mat-select formControlName="table">
-            <mat-option *ngFor=" let select of select; let a=index" [value]="a" (click)="setTable(a)">
-                {{a}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+    <div class="flex-container">
+        <mat-form-field class="small-input" appearance="fill">
+            <mat-label>Tisch</mat-label>
+            <mat-select formControlName="table">
+                <mat-option *ngFor=" let table of tables; let a=index" [value]="a+1" (click)="setTable(a+1)">
+                    {{a+1}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="small-input" appearance="fill">
+            <mat-label>Dein Name</mat-label>
+            <input matInput type="text" formControlName="username" (keyup)="setUsername($event)" class="form-control">
+            <mat-icon matSuffix><i class="fa-solid fa-user"></i></mat-icon>
+        </mat-form-field>
+    </div>
     <div formArrayName="articles" class="orderboard">
         <div class="order" *ngFor="let article of getArticles().controls; let i=index" [formGroupName]="i">
             <div class="num">#{{i + 1}}</div>
@@ -32,13 +39,19 @@
                     </mat-select>
                 </mat-form-field>
                 <div class="flex-container flex-end">
-                    <i (click)="removeQuantity(i)" class="fa-solid fa-trash"
-                        style="cursor: pointer; color: #9d9d9d; font-size: 30px;"></i>
+                    <i (click)="removeQuantity(i)" class="fa-solid fa-xmark"
+                        style="cursor: pointer; color: #9d9d9d; font-size: 30px;margin-right: 20px;"></i>
                 </div>
             </div>
             <div>
+                <mat-checkbox formControlName="lactoseFree">Laktosefrei</mat-checkbox>
+                <mat-checkbox formControlName="coupon">Coupon</mat-checkbox>
+                <mat-checkbox formControlName="extraCream">Mit Sahne</mat-checkbox>
+                <mat-checkbox formControlName="togo">To Go (Nur für Kaffee)</mat-checkbox>
+            </div>
+            <div>
                 <mat-form-field class="full-width" appearance="fill">
-                    <mat-label>Essware/Getränk:</mat-label>
+                    <mat-label>Essware/Getränk/Dienst:</mat-label>
                     <input matInput type="text" formControlName="name" class="form-control" [matAutocomplete]="auto">
                 </mat-form-field>
                 <mat-autocomplete #auto="matAutocomplete">
@@ -55,7 +68,7 @@
     <div>
         <h3 class="total-output">Total: {{ getTotalPrice() | currency:'CHF' | space}}</h3>
         <button style="float: right;" type="submit" class="btn btn-success" mat-raised-button
-            [disabled]="getTotalPrice() === 0 || textIsEmpty()" (click)="onSubmit()">{{orderId > 0
+            [disabled]="(getTotalQuantity() === 0 )|| textIsEmpty()" (click)="onSubmit()">{{orderId > 0
             ?'Anpassung speichern':'Bestellung aufgeben'}}</button>
     </div>
 </form>
@@ -67,8 +80,12 @@
         <mat-button-toggle value="canceled" (change)="getCanceledOrders()">Storniert</mat-button-toggle>
     </mat-button-toggle-group>
     <div class="orders-list">
+        <p style="text-align:center;margin-top:20px;"><i class="fa-solid fa-mill-sign"></i>=Laktosefrei <i
+                class="fa-solid fa-ticket"></i>=Coupon <i class="fa-solid fa-poop"></i>=Sahne <i
+                class="fa-solid fa-person-running"></i>=To Go</p>
         <div class="order" *ngFor="let order of orders; let i=index">
-            <h2>Bestellung #{{order.id}}</h2>
+            <h2 style="display: inline;">Bestellung #{{order.id}}</h2>
+            <h3>Von: {{order.json.username}}</h3>
             <strong>Tisch: {{ order.json.table === 'undefined'? 0 : order.json.table}}</strong>
             <span class="label"
                 [ngClass]="{'bg-red': getDurationInt(order.created) > 15 }">{{getDurationInt(order.created) < 60 ?
@@ -83,8 +100,11 @@
                         </mat-menu>
                     </div>
                     <div *ngFor="let article of order.json.articles; let j=index">
-                        {{article.quantity}} X {{article.name}}
+                        <pre>{{article.quantity}} X {{article.name}}
+({{article.price| currency:' CHF' | space}})( <i *ngIf="article.lactoseFree" class="fa-solid fa-mill-sign"></i> <i *ngIf="article.coupon" class="fa-solid fa-ticket"></i> <i *ngIf="article.extraCream" class="fa-solid fa-poop"></i> <i *ngIf="article.lactoseFree" class="fa-solid fa-person-running"></i>)</pre>
+                        <p></p>
                     </div>
+
                     <p></p>
                     Total: {{getTotalPriceByArticles(order.json.articles)| currency:' CHF' | space}}
         </div>

@@ -18,6 +18,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+
+
 
 
 
@@ -43,7 +47,9 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
     MatDividerModule,
     MatMenuModule,
     MatAutocompleteModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatCheckboxModule,
+    MatChipsModule
   ],
   providers: [HomeService, MatSnackBarModule],
   bootstrap: [AppComponent]

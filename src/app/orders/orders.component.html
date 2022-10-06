@@ -1,9 +1,13 @@
+<p style="text-align:center;margin-top:20px;"><i class="fa-solid fa-mill-sign"></i>=Laktosefrei <i
+        class="fa-solid fa-ticket"></i>=Coupon <i class="fa-solid fa-poop"></i>=Sahne <i
+        class="fa-solid fa-person-running"></i>=To Go</p>
 <div class="orders-list">
     <div class="order" *ngFor="let order of orders; let i=index">
-        <h2>Bestellung #{{order.id}}</h2>
+        <h2 style="display: inline;">Bestellung #{{order.id}}</h2>
+        <h3>Von: {{order.json.username}}</h3>
         <strong>Tisch: {{ order.json.table === 'undefined'? 0 : order.json.table}}</strong>
-        <span class="label" [ngClass]="{'bg-red': getDurationInt(order.created) }">{{getDurationInt(order.created) < 60
-                ? getDuration(order.created) : '>59min' }}</span>
+        <span class="label" [ngClass]="{'bg-red': getDurationInt(order.created) > 15 }">{{getDurationInt(order.created)
+            < 60 ? getDuration(order.created) : '>59min' }}</span>
                 <div class="options">
                     <i class="fa-solid fa-gear" [matMenuTriggerFor]="setting"></i>
                     <mat-menu #setting="matMenu">
@@ -12,12 +16,31 @@
                     </mat-menu>
                 </div>
                 <div *ngFor="let article of order.json.articles; let j=index">
-                    {{article.quantity}} X {{article.name}}
+                    <pre>{{article.quantity}} X {{article.name}}    
+({{article.price| currency:' CHF' | space}}) ( <i *ngIf="article.lactoseFree" class="fa-solid fa-mill-sign"></i> <i *ngIf="article.coupon" class="fa-solid fa-ticket"></i> <i *ngIf="article.extraCream" class="fa-solid fa-poop"></i> <i *ngIf="article.lactoseFree" class="fa-solid fa-person-running"></i>)</pre>
+                    <p></p>
                 </div>
-                <p></p>
-                Total: {{getTotalPrice(order.json.articles)| currency:' CHF' | space}}
     </div>
 </div>
+<h2 style="text-align: center;">Stornierungen:</h2>
+<div class="orders-list">
+    <ng-container *ngFor="let order of stornos; let i=index">
+        <div class="order" *ngIf="getDurationInt(order.created) <= 5">
+            <h2 style="display: inline;">Bestellung #{{order.id}}</h2>
+            <h3>Von: {{order.json.username}}</h3>
+            <strong>Tisch: {{ order.json.table === 'undefined'? 0 : order.json.table}}</strong>
+            <span class="label"
+                [ngClass]="{'bg-red': getDurationInt(order.created) > 15 }">{{getDurationInt(order.created)
+                < 60 ? getDuration(order.created) : '>59min' }}</span>
+
+                    <div *ngFor="let article of order.json.articles; let j=index">
+                        <pre>{{article.quantity}} X {{article.name}}    
+({{article.price| currency:' CHF' | space}}) ( <i *ngIf="article.lactoseFree" class="fa-solid fa-mill-sign"></i> <i *ngIf="article.coupon" class="fa-solid fa-ticket"></i> <i *ngIf="article.extraCream" class="fa-solid fa-poop"></i> <i *ngIf="article.lactoseFree" class="fa-solid fa-person-running"></i>)</pre>
+                        <p></p>
+                    </div>
+        </div>
+    </ng-container>
+</div>
 <div>
-    <h2>Total Umsatz: {{revenue| currency:' CHF' | space}}</h2>
+    <h2 style="text-align: center;">Total Umsatz: {{revenue| currency:' CHF' | space}}</h2>
 </div>
