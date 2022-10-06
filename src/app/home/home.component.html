@@ -68,11 +68,13 @@
     <div>
         <h3 class="total-output">Total: {{ getTotalPrice() | currency:'CHF' | space}}</h3>
         <button style="float: right;" type="submit" class="btn btn-success" mat-raised-button
-            [disabled]="(getTotalQuantity() === 0 )|| textIsEmpty()" (click)="onSubmit()">{{orderId > 0
+            [disabled]="(getTotalQuantity() === 0 ) || textIsEmpty() || reactiveForm.value.table > 0"
+            (click)="onSubmit()">{{orderId > 0
             ?'Anpassung speichern':'Bestellung aufgeben'}}</button>
     </div>
 </form>
 <div class="overview" [ngClass]="{'hide': !toggleOverview}">
+    <mat-slide-toggle style="margin-left: 40px;" (toggleChange)="toggleMe = !toggleMe">My</mat-slide-toggle>
     <i class="fa-sharp fa-solid fa-square-xmark" (click)="toggleOverview = !toggleOverview;"></i>
     <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style" value="current">
         <mat-button-toggle value="current" (change)="getOrders()">Aktuell</mat-button-toggle>
@@ -83,30 +85,59 @@
         <p style="text-align:center;margin-top:20px;"><i class="fa-solid fa-mill-sign"></i>=Laktosefrei <i
                 class="fa-solid fa-ticket"></i>=Coupon <i class="fa-solid fa-poop"></i>=Sahne <i
                 class="fa-solid fa-person-running"></i>=To Go</p>
-        <div class="order" *ngFor="let order of orders; let i=index">
-            <h2 style="display: inline;">Bestellung #{{order.id}}</h2>
-            <h3>Von: {{order.json.username}}</h3>
-            <strong>Tisch: {{ order.json.table === 'undefined'? 0 : order.json.table}}</strong>
-            <span class="label"
-                [ngClass]="{'bg-red': getDurationInt(order.created) > 15 }">{{getDurationInt(order.created) < 60 ?
-                    getDuration(order.created) : '>59min' }}</span>
-                    <div class="options">
-                        <i class="fa-solid fa-gear" [matMenuTriggerFor]="setting"></i>
-                        <mat-menu #setting="matMenu">
-                            <button mat-menu-item (click)="editOrder(order.id, order.json)">Bearbeiten</button>
-                            <button mat-menu-item (click)="reuseOrder(order.json)">Erneut verwenden</button>
-                            <button mat-menu-item (click)="terminateOrder(order.id)">Bestellung abhacken</button>
-                            <button mat-menu-item (click)="cancelOrder(order.id)">Stornieren</button>
-                        </mat-menu>
-                    </div>
-                    <div *ngFor="let article of order.json.articles; let j=index">
-                        <pre>{{article.quantity}} X {{article.name}}
+        <ng-container *ngFor="let order of orders; let i=index">
+            <div class="order" *ngIf="(toggleMe && getUsernameTyped() === order.json.username)">
+                <!-- <div class="order" [ngClass]="{'hidden':toggleMe && reactiveForm.value.username !== order.json.name}"> -->
+                <h2 style="display: inline;">Bestellung #{{order.id}}</h2>
+                <h3>Von: {{order.json.username}}</h3>
+                <strong>Tisch: {{ order.json.table === 'undefined'? 0 : order.json.table}}</strong>
+                <span class="label"
+                    [ngClass]="{'bg-red': getDurationInt(order.created) > 15 }">{{getDurationInt(order.created) < 60 ?
+                        getDuration(order.created) : '>59min' }}</span>
+                        <div class="options">
+                            <i class="fa-solid fa-gear" [matMenuTriggerFor]="setting"></i>
+                            <mat-menu #setting="matMenu">
+                                <button mat-menu-item (click)="editOrder(order.id, order.json)">Bearbeiten</button>
+                                <button mat-menu-item (click)="reuseOrder(order.json)">Erneut verwenden</button>
+                                <button mat-menu-item (click)="terminateOrder(order.id)">Bestellung abhacken</button>
+                                <button mat-menu-item (click)="cancelOrder(order.id)">Stornieren</button>
+                            </mat-menu>
+                        </div>
+                        <div *ngFor="let article of order.json.articles; let j=index">
+                            <pre>{{article.quantity}} X {{article.name}}
 ({{article.price| currency:' CHF' | space}})( <i *ngIf="article.lactoseFree" class="fa-solid fa-mill-sign"></i> <i *ngIf="article.coupon" class="fa-solid fa-ticket"></i> <i *ngIf="article.extraCream" class="fa-solid fa-poop"></i> <i *ngIf="article.lactoseFree" class="fa-solid fa-person-running"></i>)</pre>
-                        <p></p>
-                    </div>
+                            <p></p>
+                        </div>
 
-                    <p></p>
-                    Total: {{getTotalPriceByArticles(order.json.articles)| currency:' CHF' | space}}
-        </div>
+                        <p></p>
+                        Total: {{getTotalPriceByArticles(order.json.articles)| currency:' CHF' | space}}
+            </div>
+            <div class="order" *ngIf="!toggleMe">
+                <!-- <div class="order" [ngClass]="{'hidden':toggleMe && reactiveForm.value.username !== order.json.name}"> -->
+                <h2 style="display: inline;">Bestellung #{{order.id}}</h2>
+                <h3>Von: {{order.json.username}}</h3>
+                <strong>Tisch: {{ order.json.table === 'undefined'? 0 : order.json.table}}</strong>
+                <span class="label"
+                    [ngClass]="{'bg-red': getDurationInt(order.created) > 15 }">{{getDurationInt(order.created) < 60 ?
+                        getDuration(order.created) : '>59min' }}</span>
+                        <div class="options">
+                            <i class="fa-solid fa-gear" [matMenuTriggerFor]="setting"></i>
+                            <mat-menu #setting="matMenu">
+                                <button mat-menu-item (click)="editOrder(order.id, order.json)">Bearbeiten</button>
+                                <button mat-menu-item (click)="reuseOrder(order.json)">Erneut verwenden</button>
+                                <button mat-menu-item (click)="terminateOrder(order.id)">Bestellung abhacken</button>
+                                <button mat-menu-item (click)="cancelOrder(order.id)">Stornieren</button>
+                            </mat-menu>
+                        </div>
+                        <div *ngFor="let article of order.json.articles; let j=index">
+                            <pre>{{article.quantity}} X {{article.name}}
+({{article.price| currency:' CHF' | space}})( <i *ngIf="article.lactoseFree" class="fa-solid fa-mill-sign"></i> <i *ngIf="article.coupon" class="fa-solid fa-ticket"></i> <i *ngIf="article.extraCream" class="fa-solid fa-poop"></i> <i *ngIf="article.lactoseFree" class="fa-solid fa-person-running"></i>)</pre>
+                            <p></p>
+                        </div>
+
+                        <p></p>
+                        Total: {{getTotalPriceByArticles(order.json.articles)| currency:' CHF' | space}}
+            </div>
+        </ng-container>
     </div>
 </div>

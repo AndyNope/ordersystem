@@ -20,9 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
-
-
-
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 
 @NgModule({
@@ -49,7 +47,8 @@ import { MatChipsModule } from '@angular/material/chips';
     MatAutocompleteModule,
     MatButtonToggleModule,
     MatCheckboxModule,
-    MatChipsModule
+    MatChipsModule,
+    MatSlideToggleModule
   ],
   providers: [HomeService, MatSnackBarModule],
   bootstrap: [AppComponent]

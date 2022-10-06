@@ -12,6 +12,7 @@ import { HomeService } from './home.service';
 })
 export class HomeComponent implements OnInit {
 
+  toggleMe = false;
   isLocalhost = window.location.hostname === 'localhost'
   select = Array(100);
   tables = Array(25);
@@ -33,7 +34,7 @@ export class HomeComponent implements OnInit {
       articles: this.formBuilder.array([]),
       total: new FormControl(0),
       username: new FormControl(localStorage.getItem('name') !== undefined ? localStorage.getItem('name') : ''),
-      table: new FormControl(1)
+      table: new FormControl(0)
     });
   }
 
@@ -52,8 +53,12 @@ export class HomeComponent implements OnInit {
       articles: this.formBuilder.array([]),
       total: new FormControl(0),
       username: new FormControl(localStorage.getItem('name') !== undefined ? localStorage.getItem('name') : ''),
-      table: new FormControl(1)
+      table: new FormControl(0)
     });
+  }
+
+  getUsernameTyped(): string {
+    return this.reactiveForm.value.username;
   }
 
   getDuration(date: Date): string {
@@ -67,7 +72,7 @@ export class HomeComponent implements OnInit {
     const eventEndTime = new Date();
     return this.millisToMinutesInt(eventEndTime.valueOf() - eventStartTime.valueOf());
   }
-  
+
   millisToMinutesAndSeconds(millis: number) {
     const minutes = Math.floor(millis / 60000);
     const seconds = ((millis % 60000) / 1000).toFixed(0);
