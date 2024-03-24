@@ -14,7 +14,7 @@ export class HomeService {
   ) { }
 
   setOrder(body: any): Observable<any> {
-    return this.http.post('https://api.maid-cafe.ch/?mode=setOrder', body, { observe: 'response' }).pipe(
+    return this.http.post('https://api.maidcafe-dreamgarden.ch/?mode=setOrder', body, { observe: 'response' }).pipe(
       map((response: any) => {
         // console.log(response);
         if (response !== null) {
@@ -28,7 +28,7 @@ export class HomeService {
   }
 
   editOrder(body: any, id: number): Observable<any> {
-    return this.http.post('https://api.maid-cafe.ch/?mode=editOrder', { json: body, id }, { observe: 'response' }).pipe(
+    return this.http.post('https://api.maidcafe-dreamgarden.ch/?mode=editOrder', { json: body, id }, { observe: 'response' }).pipe(
       map((response: any) => {
         // console.log(response);
         if (response !== null) {
@@ -41,8 +41,8 @@ export class HomeService {
     );
   }
 
-  getAutocomplete(): Observable<any> {
-    return this.http.get('https://api.maid-cafe.ch/?mode=getAutocomplete', { observe: 'response' }).pipe(
+  getMenu(): Observable<any> {
+    return this.http.get('https://api.maidcafe-dreamgarden.ch/?mode=getMenus', { observe: 'response' }).pipe(
       map((response: any) => {
         // console.log(response);
         if (response !== null) {
@@ -55,8 +55,8 @@ export class HomeService {
     );
   }
 
-  setAutocomplete(text: string): Observable<any> {
-    return this.http.post('https://api.maid-cafe.ch/?mode=addAutocomplete', { text }, { observe: 'response' }).pipe(
+  setMenu(text: string): Observable<any> {
+    return this.http.post('https://api.maidcafe-dreamgarden.ch/?mode=addMenu', { text }, { observe: 'response' }).pipe(
       map((response: any) => {
         if (response !== null) {
           return response;
@@ -68,8 +68,8 @@ export class HomeService {
     );
   }
 
-  removeAutocomplete(id: number): Observable<any> {
-    return this.http.post('https://api.maid-cafe.ch/?mode=removeAutocomplete', { id }, { observe: 'response' }).pipe(
+  removeMenu(id: number): Observable<any> {
+    return this.http.post('https://api.maidcafe-dreamgarden.ch/?mode=removeMenu', { id }, { observe: 'response' }).pipe(
       map((response: any) => {
         if (response !== null) {
           return response;

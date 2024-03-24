@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { AppRoutingModule } from './app-routing.module';
@@ -21,9 +21,13 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { AutocompleteComponent } from './autocomplete/autocomplete.component';
+import { MenuComponent } from './menu/menu.component';
 import { OrderService } from './orders/order.service';
-import { AutocompleteService } from './autocomplete/autocomplete.service';
+import { MenuService } from './menu/menu.service';
+import {MatIconModule} from "@angular/material/icon";
+import localeDe from '@angular/common/locales/de-CH';
+import {registerLocaleData} from "@angular/common";
+registerLocaleData(localeDe);
 
 
 @NgModule({
@@ -32,7 +36,7 @@ import { AutocompleteService } from './autocomplete/autocomplete.service';
     HomeComponent,
     OrdersComponent,
     SpacePipe,
-    AutocompleteComponent
+    MenuComponent
   ],
   imports: [
     BrowserModule,
@@ -47,18 +51,20 @@ import { AutocompleteService } from './autocomplete/autocomplete.service';
     MatSnackBarModule,
     FormsModule,
     MatDividerModule,
-    MatMenuModule,
     MatAutocompleteModule,
+    MatMenuModule,
     MatButtonToggleModule,
     MatCheckboxModule,
     MatChipsModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatIconModule
   ],
   providers: [
-    HomeService, 
-    MatSnackBarModule, 
+    HomeService,
+    MatSnackBarModule,
     OrderService,
-    AutocompleteService
+    MenuService,
+    { provide: LOCALE_ID, useValue: 'de-CH'}
   ],
   bootstrap: [AppComponent]
 })

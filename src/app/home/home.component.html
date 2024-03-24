@@ -29,15 +29,14 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
-                <mat-form-field class="small-input" appearance="fill">
-                    <mat-label>Einzelpreis</mat-label>
-                    <mat-select formControlName="price">
-                        <mat-option *ngFor=" let select of select; let a=index" [value]="a * 0.50"
-                            (click)="setTotal(i,+article.value.price * a)">
-                            {{ a * 0.50 | currency:' CHF' | space}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+
+              <mat-form-field class="small-input" appearance="fill">
+                <mat-label>Einzelpreis</mat-label>
+                <input class="form-control" formControlName="price"
+                       [value]="getArticles().at(i).get('price')?.value "
+                       matInput readonly
+                       type="text">
+              </mat-form-field>
                 <div class="flex-container flex-end">
                     <i (click)="removeQuantity(i)" class="fa-solid fa-xmark"
                         style="cursor: pointer; color: #9d9d9d; font-size: 30px;margin-right: 20px;"></i>
@@ -45,17 +44,36 @@
             </div>
             <div>
                 <mat-checkbox formControlName="lactoseFree">Laktosefrei</mat-checkbox>
-                <mat-checkbox formControlName="coupon">Coupon</mat-checkbox>
-                <mat-checkbox formControlName="extraCream">Mit Sahne</mat-checkbox>
-                <mat-checkbox formControlName="togo">To Go (Nur für Kaffee)</mat-checkbox>
+                <mat-checkbox formControlName="noCream">Ohne Sahne</mat-checkbox>
             </div>
-            <div>
+             <div *ngIf="!loading">
+             <!-- <mat-form-field class="small-input" appearance="fill">
+                <mat-label>Filter</mat-label>
+                <mat-select [value]="0">
+                  <mat-option [value]="0"
+                              (click)="filterOptions(0)">
+                    Alle
+                  </mat-option>
+                  <mat-option [value]="1"
+                              (click)="filterOptions(1)">
+                    Food
+                  </mat-option>
+                  <mat-option [value]="1"
+                              (click)="filterOptions(2)">
+                    Drinks
+                  </mat-option>
+                  <mat-option [value]="1"
+                              (click)="filterOptions(3)">
+                    Non-Food
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>-->
                 <mat-form-field class="full-width" appearance="fill">
                     <mat-label>Essware/Getränk/Dienst:</mat-label>
                     <input matInput type="text" formControlName="name" class="form-control" [matAutocomplete]="auto">
                 </mat-form-field>
                 <mat-autocomplete #auto="matAutocomplete">
-                    <mat-option *ngFor="let option of options" [value]="option.name">
+                    <mat-option *ngFor="let option of options" [value]="option.name" (click)="setOrder(i,option)">
                         {{ option.name }}
                     </mat-option>
                 </mat-autocomplete>
@@ -68,7 +86,7 @@
     <div>
         <h3 class="total-output">Total: {{ getTotalPrice() | currency:'CHF' | space}}</h3>
         <button style="float: right;" type="submit" class="btn btn-success" mat-raised-button
-            [disabled]="(getTotalQuantity() === 0 ) || textIsEmpty() || reactiveForm.value.table === 0"
+            [disabled]="reactiveForm.value.table === 0 "
             (click)="onSubmit()">{{orderId > 0
             ?'Anpassung speichern':'Bestellung aufgeben'}}</button>
     </div>
@@ -82,9 +100,7 @@
         <mat-button-toggle value="canceled" (change)="getCanceledOrders()">Storniert</mat-button-toggle>
     </mat-button-toggle-group>
     <div class="orders-list">
-        <p style="text-align:center;margin-top:20px;"><i class="fa-solid fa-mill-sign"></i>=Laktosefrei <i
-                class="fa-solid fa-ticket"></i>=Coupon <i class="fa-solid fa-poop"></i>=Sahne <i
-                class="fa-solid fa-person-running"></i>=To Go</p>
+        <p style="text-align:center;margin-top:20px;"><i class="fa-solid fa-mill-sign"></i>=Laktosefrei <i class="fa-solid fa-poop"></i>=Sahne </p>
         <ng-container *ngFor="let order of orders; let i=index">
             <div class="order" *ngIf="(toggleMe && getUsernameTyped() === order.json.username)">
                 <!-- <div class="order" [ngClass]="{'hidden':toggleMe && reactiveForm.value.username !== order.json.name}"> -->
@@ -105,7 +121,7 @@
                         </div>
                         <div *ngFor="let article of order.json.articles; let j=index">
                             <pre>{{article.quantity}} X {{article.name}}
-({{article.price| currency:' CHF' | space}})( <i *ngIf="article.lactoseFree" class="fa-solid fa-mill-sign"></i> <i *ngIf="article.coupon" class="fa-solid fa-ticket"></i> <i *ngIf="article.extraCream" class="fa-solid fa-poop"></i> <i *ngIf="article.lactoseFree" class="fa-solid fa-person-running"></i>)</pre>
+({{article.price| currency:' CHF' | space}}){{article.noCream || article.lactoseFree ? '(':''}} <i *ngIf="article.lactoseFree" class="fa-solid fa-mill-sign"></i> <i *ngIf="article.noCream" class="fa-solid fa-poop"></i>{{article.noCream || article.lactoseFree ? ')':''}}</pre>
                             <p></p>
                         </div>
 
@@ -131,7 +147,7 @@
                         </div>
                         <div *ngFor="let article of order.json.articles; let j=index">
                             <pre>{{article.quantity}} X {{article.name}}
-({{article.price| currency:' CHF' | space}})( <i *ngIf="article.lactoseFree" class="fa-solid fa-mill-sign"></i> <i *ngIf="article.coupon" class="fa-solid fa-ticket"></i> <i *ngIf="article.extraCream" class="fa-solid fa-poop"></i> <i *ngIf="article.lactoseFree" class="fa-solid fa-person-running"></i>)</pre>
+({{article.price| currency:' CHF' | space}}){{!article.noCream || article.lactoseFree ? '(':''}} <i *ngIf="article.lactoseFree" class="fa-solid fa-mill-sign"></i> <i *ngIf="!article.noCream" class="fa-solid fa-poop"></i>{{!article.noCream || article.lactoseFree ? ')':''}}</pre>
                             <p></p>
                         </div>
 

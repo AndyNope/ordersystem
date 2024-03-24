@@ -1,6 +1,4 @@
-<p style="text-align:center;margin-top:20px;"><i class="fa-solid fa-mill-sign"></i>=Laktosefrei <i
-        class="fa-solid fa-ticket"></i>=Coupon <i class="fa-solid fa-poop"></i>=Sahne <i
-        class="fa-solid fa-person-running"></i>=To Go</p>
+<p style="text-align:center;margin-top:20px;"><i class="fa-solid fa-mill-sign"></i>=Laktosefrei <i class="fa-solid fa-poop"></i>=Sahne </p>
 <div class="orders-list">
     <div class="order" *ngFor="let order of orders; let i=index">
         <h2 style="display: inline;">Bestellung #{{order.id}}</h2>
@@ -16,8 +14,8 @@
                     </mat-menu>
                 </div>
                 <div *ngFor="let article of order.json.articles; let j=index">
-                    <pre>{{article.quantity}} X {{article.name}}    
-({{article.price| currency:' CHF' | space}}) ( <i *ngIf="article.lactoseFree" class="fa-solid fa-mill-sign"></i> <i *ngIf="article.coupon" class="fa-solid fa-ticket"></i> <i *ngIf="article.extraCream" class="fa-solid fa-poop"></i> <i *ngIf="article.lactoseFree" class="fa-solid fa-person-running"></i>)</pre>
+                    <pre>{{article.quantity}} X {{article.name}}
+({{article.price| currency:' CHF' | space}}) {{!article.noCream || article.lactoseFree ? '(':''}} <i *ngIf="article.lactoseFree" class="fa-solid fa-mill-sign"></i> <i *ngIf="!article.noCream" class="fa-solid fa-poop"></i>{{!article.noCream || article.lactoseFree ? ')':''}}</pre>
                     <p></p>
                 </div>
     </div>
@@ -34,8 +32,8 @@
                 < 60 ? getDuration(order.created) : '>59min' }}</span>
 
                     <div *ngFor="let article of order.json.articles; let j=index">
-                        <pre>{{article.quantity}} X {{article.name}}    
-({{article.price| currency:' CHF' | space}}) ( <i *ngIf="article.lactoseFree" class="fa-solid fa-mill-sign"></i> <i *ngIf="article.coupon" class="fa-solid fa-ticket"></i> <i *ngIf="article.extraCream" class="fa-solid fa-poop"></i> <i *ngIf="article.lactoseFree" class="fa-solid fa-person-running"></i>)</pre>
+                        <pre>{{article.quantity}} X {{article.name}}
+({{article.price| currency:' CHF' | space}}) {{!article.noCream || article.lactoseFree ? '(':''}} <i *ngIf="article.lactoseFree" class="fa-solid fa-mill-sign"></i>  <i *ngIf="!article.noCream" class="fa-solid fa-poop"></i>{{!article.noCream || article.lactoseFree ? ')':''}}</pre>
                         <p></p>
                     </div>
         </div>

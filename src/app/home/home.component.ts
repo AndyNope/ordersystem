@@ -3,7 +3,15 @@ import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OrderService } from '../orders/order.service';
 import { HomeService } from './home.service';
+import {forceAutocomplete} from "@angular/cli/src/utilities/environment-options";
 
+
+interface MenuOption {
+  id: number;
+  name: string;
+  type: number;
+  price: number;
+}
 
 @Component({
   selector: 'app-home',
@@ -17,11 +25,13 @@ export class HomeComponent implements OnInit {
   select = Array(100);
   tables = Array(25);
   reactiveForm: FormGroup;
-  options: any;
+  options: MenuOption[] = [];
+  originalOptions: MenuOption[] = [];
   orders: any;
   orderId = 0;
 
   toggleOverview = false;
+  loading: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -40,7 +50,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.addQuantity();
-    this.getAutocomplete();
+    this.getMenu();
 
     if (localStorage.getItem('name') !== undefined) {
       this.reactiveForm.get('username')?.setValue(localStorage.getItem('name'));
@@ -86,10 +96,11 @@ export class HomeComponent implements OnInit {
     return Math.floor(millis / 60000);
   }
 
-  getAutocomplete() {
-    this.homeService.getAutocomplete().subscribe(
+  getMenu() {
+    this.homeService.getMenu().subscribe(
       response => {
         this.options = response.body;
+        this.originalOptions = response.body;
       }
     );
 
@@ -105,12 +116,11 @@ export class HomeComponent implements OnInit {
 
   newQuantity(): FormGroup {
     return this.formBuilder.group({
-      quantity: 0,
+      quantity: 1,
       name: '',
       price: 0,
-      togo: false,
-      extraCream: false,
-      coupon: false,
+      type:0,
+      noCream: false,
       lactoseFree: false,
       total: 0,
     })
@@ -147,8 +157,8 @@ export class HomeComponent implements OnInit {
   addQuantity() {
     this.getArticles().push(this.newQuantity());
     for (const article of this.getArticles().value) {
-      this.homeService.setAutocomplete(article.name).subscribe(response => {
-        this.getAutocomplete();
+      this.homeService.setMenu(article.name).subscribe(response => {
+        this.getMenu();
       });
     }
   }
@@ -199,7 +209,6 @@ export class HomeComponent implements OnInit {
         }
         this.orders = JSON.parse(JSON.stringify(response.body));
         console.log(this.orders);
-
       }
     );
   }
@@ -252,24 +261,25 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  removeAutocomplete(id: number) {
-    this.homeService.removeAutocomplete(id).subscribe(response => {
-      this.getAutocomplete();
+  removeMenu(id: number) {
+    this.homeService.removeMenu(id).subscribe(response => {
+      this.getMenu();
     });
   }
 
   onSubmit() {
+    console.log(this.reactiveForm.value);
     this.reactiveForm.get('total')?.setValue(this.getTotalPrice());
     if (this.orderId > 0) {
       this.homeService.editOrder(this.reactiveForm.value, this.orderId).subscribe(response => {
         this.initForm();
         this.addQuantity();
-        this.getAutocomplete();
+        this.getMenu();
         this.setTable(0);
         this.orderId = 0;
       });
       for (const article of this.getArticles().value) {
-        this.homeService.setAutocomplete(article.name).subscribe(response => { });
+        this.homeService.setMenu(article.name).subscribe(response => { });
       }
       this.snackBar.open('Bestellung wurde bearbeitet!', undefined, {
         duration: 2000,
@@ -279,17 +289,38 @@ export class HomeComponent implements OnInit {
       this.homeService.setOrder(this.reactiveForm.value).subscribe(response => {
         this.initForm();
         this.addQuantity();
-        this.getAutocomplete();
+        this.getMenu();
         this.setTable(0);
         this.orderId = 0;
       });
       for (const article of this.getArticles().value) {
-        this.homeService.setAutocomplete(article.name).subscribe(response => { });
+        this.homeService.setMenu(article.name).subscribe(response => { });
       }
       this.snackBar.open('Bestellung wurde aufgegeben!', undefined, {
         duration: 2000,
         horizontalPosition: 'right'
       });
     }
+  }
+
+  setOrder(index:number, option: any) {
+    this.getArticles().at(index).get('name')?.setValue(option.name);
+    this.getArticles().at(index).get('price')?.setValue(option.price );
+    this.getArticles().at(index).get('type')?.setValue(option.type);
+    this.setTotal(index, option.price);
+  }
+
+  filterOptions(i: number) {
+    this.loading = true;
+    this.options = Array();
+    if(i === 0) return;
+    for (const op  of this.originalOptions) {
+      if(op.type === i) {
+        this.options.push(op);
+      }
+    }
+    this.loading = false;
+    this.cdRef.detectChanges();
+    this.cdRef.markForCheck();
   }
 }

@@ -7,14 +7,14 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class AutocompleteService {
+export class MenuService {
 
   constructor(
     private http: HttpClient
   ) { }
 
-  getAutocompleteList(): Observable<any> {
-    return this.http.get('https://api.maid-cafe.ch/?mode=getAutocomplete', { observe: 'response' }).pipe(
+  getMenuList(): Observable<any> {
+    return this.http.get('https://api.maidcafe-dreamgarden.ch/?mode=getMenus', { observe: 'response' }).pipe(
       map((response: any) => {
         // console.log(response);
         if (response !== null) {
@@ -27,8 +27,8 @@ export class AutocompleteService {
     );
   }
 
-  deleteAutocomplete(id: number): Observable<any> {
-    return this.http.post('https://api.maid-cafe.ch/?mode=removeAutocomplete', { id }, { observe: 'response' }).pipe(
+  deleteMenu(id: number): Observable<any> {
+    return this.http.post('https://api.maidcafe-dreamgarden.ch/?mode=removeMenu', { id }, { observe: 'response' }).pipe(
       map((response: any) => {
         // console.log(response);
         if (response !== null) {

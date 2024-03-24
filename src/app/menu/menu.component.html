@@ -1,0 +1,13 @@
+<div *ngIf="!loading">
+  <div class="text" *ngFor="let menu of menuList">
+      {{ menu.name }}
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" style="float: right;">
+          <i class="fa-solid fa-gears"></i>
+      </button>
+      <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="deleteMenu(menu.id)">
+              Löschen
+          </button>
+      </mat-menu>
+  </div>
+</div>

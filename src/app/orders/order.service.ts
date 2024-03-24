@@ -14,7 +14,7 @@ export class OrderService {
   ) { }
 
   getOrders(): Observable<any> {
-    return this.http.get('https://api.maid-cafe.ch/?mode=getOrders', { observe: 'response' }).pipe(
+    return this.http.get('https://api.maidcafe-dreamgarden.ch/?mode=getOrders', { observe: 'response' }).pipe(
       map((response: any) => {
         // console.log(response);
         if (response !== null) {
@@ -28,7 +28,7 @@ export class OrderService {
   }
 
   getOldOrders(): Observable<any> {
-    return this.http.get('https://api.maid-cafe.ch/?mode=getOldOrders', { observe: 'response' }).pipe(
+    return this.http.get('https://api.maidcafe-dreamgarden.ch/?mode=getOldOrders', { observe: 'response' }).pipe(
       map((response: any) => {
         // console.log(response);
         if (response !== null) {
@@ -42,7 +42,7 @@ export class OrderService {
   }
 
   getCanceledOrders(): Observable<any> {
-    return this.http.get('https://api.maid-cafe.ch/?mode=getCanceledOrders', { observe: 'response' }).pipe(
+    return this.http.get('https://api.maidcafe-dreamgarden.ch/?mode=getCanceledOrders', { observe: 'response' }).pipe(
       map((response: any) => {
         // console.log(response);
         if (response !== null) {
@@ -56,7 +56,7 @@ export class OrderService {
   }
 
   getNotCanceledOrders(): Observable<any> {
-    return this.http.get('https://api.maid-cafe.ch/?mode=getNotCanceledOrders', { observe: 'response' }).pipe(
+    return this.http.get('https://api.maidcafe-dreamgarden.ch/?mode=getNotCanceledOrders', { observe: 'response' }).pipe(
       map((response: any) => {
         // console.log(response);
         if (response !== null) {
@@ -68,9 +68,9 @@ export class OrderService {
       })
     );
   }
-  
+
   cancelOrder(id: number): Observable<any> {
-    return this.http.post('https://api.maid-cafe.ch/?mode=deleteOrder', { id }, { observe: 'response' }).pipe(
+    return this.http.post('https://api.maidcafe-dreamgarden.ch/?mode=deleteOrder', { id }, { observe: 'response' }).pipe(
       map((response: any) => {
         // console.log(response);
         if (response !== null) {
@@ -84,7 +84,7 @@ export class OrderService {
   }
 
   terminateOrder(id: number): Observable<any> {
-    return this.http.post('https://api.maid-cafe.ch/?mode=terminateOrder', { id }, { observe: 'response' }).pipe(
+    return this.http.post('https://api.maidcafe-dreamgarden.ch/?mode=terminateOrder', { id }, { observe: 'response' }).pipe(
       map((response: any) => {
         // console.log(response);
         if (response !== null) {
