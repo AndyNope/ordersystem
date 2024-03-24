@@ -1,5 +1,6 @@
 <p style="text-align:center;margin-top:20px;"><i class="fa-solid fa-mill-sign"></i>=Laktosefrei <i class="fa-solid fa-poop"></i>=Sahne </p>
-<div class="orders-list">
+<i (click)="getOrders()"  class="fa-solid fa-arrows-rotate m-auto font-bold accent-green-700" style="font-size: 60px; margin: auto; display: block; width: 60px; cursor: pointer"  ></i>
+<div class="orders-list" *ngIf="!loading">
     <div class="order" *ngFor="let order of orders; let i=index">
         <h2 style="display: inline;">Bestellung #{{order.id}}</h2>
         <h3>Von: {{order.json.username}}</h3>
@@ -20,8 +21,11 @@
                 </div>
     </div>
 </div>
+<div *ngIf="loading">
+  <img src="assets/img/loading.gif" height="100px" width="100px" style="margin: 0 auto">
+</div>
 <h2 style="text-align: center;">Stornierungen:</h2>
-<div class="orders-list">
+<div class="orders-list" *ngIf="!loading">
     <ng-container *ngFor="let order of stornos; let i=index">
         <div class="order" *ngIf="getDurationInt(order.created) <= 5">
             <h2 style="display: inline;">Bestellung #{{order.id}}</h2>
@@ -38,6 +42,10 @@
                     </div>
         </div>
     </ng-container>
+</div>
+
+<div *ngIf="loading">
+  <img src="assets/img/loading.gif" height="100px" width="100px" style="margin: 0 auto">
 </div>
 <div>
     <h2 style="text-align: center;">Total Umsatz: {{revenue| currency:' CHF' | space}}</h2>

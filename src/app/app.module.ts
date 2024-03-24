@@ -27,6 +27,7 @@ import { MenuService } from './menu/menu.service';
 import {MatIconModule} from "@angular/material/icon";
 import localeDe from '@angular/common/locales/de-CH';
 import {registerLocaleData} from "@angular/common";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 registerLocaleData(localeDe);
 
 
@@ -38,27 +39,28 @@ registerLocaleData(localeDe);
     SpacePipe,
     MenuComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSnackBarModule,
-    FormsModule,
-    MatDividerModule,
-    MatAutocompleteModule,
-    MatMenuModule,
-    MatButtonToggleModule,
-    MatCheckboxModule,
-    MatChipsModule,
-    MatSlideToggleModule,
-    MatIconModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatInputModule,
+        MatButtonModule,
+        MatSnackBarModule,
+        FormsModule,
+        MatDividerModule,
+        MatAutocompleteModule,
+        MatMenuModule,
+        MatButtonToggleModule,
+        MatCheckboxModule,
+        MatChipsModule,
+        MatSlideToggleModule,
+        MatIconModule,
+        MatProgressSpinnerModule
+    ],
   providers: [
     HomeService,
     MatSnackBarModule,

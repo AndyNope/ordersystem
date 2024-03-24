@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { OrderService } from './order.service';
+import {count} from "rxjs";
 
 @Component({
   selector: 'app-orders',
@@ -8,10 +9,11 @@ import { OrderService } from './order.service';
   styleUrls: ['./orders.component.scss']
 })
 export class OrdersComponent implements OnInit {
-  orders: any;
+  orders: any = [];
   stornos: any;
   counter = 0;
   revenue = 0;
+  loading = false;
   constructor(
     private orderService: OrderService,
     private cdRef: ChangeDetectorRef,
@@ -27,14 +29,14 @@ export class OrdersComponent implements OnInit {
       this.getNotCanceledOrders();
       this.getOrders();
       this.getStornos();
-      if (this.counter < this.orders.lenght) {
-        this.snackBar.open('Neue Bestellung ist angekommen!', undefined, {
-          duration: 2000,
-          horizontalPosition: 'right'
-        });
-        this.counter = this.orders.lenght;
-      }
     }, 30000);
+  }
+
+  playSound(){
+    let audio = new Audio();
+    audio.src = "../../../assets/sound/notification.mp3";
+    audio.load();
+    audio.play();
   }
 
   getDuration(date: Date): string {
@@ -82,14 +84,29 @@ export class OrdersComponent implements OnInit {
   }
 
   getOrders() {
+    this.loading = true;
     this.orderService.getOrders().subscribe(
       response => {
+
+        this.loading = false;
         for (const order of response.body) {
           order.json = JSON.parse(order.json);
         }
+
+        let newOrders = [];
+        newOrders = JSON.parse(JSON.stringify(response.body));
+
+        if (newOrders.length > this.counter) {
+          this.snackBar.open('Neue Bestellung ist angekommen!', undefined, {
+            duration: 2000,
+            horizontalPosition: 'right'
+          });
+          this.playSound();
+          this.counter = newOrders.length;
+        }
         this.orders = JSON.parse(JSON.stringify(response.body));
         if (this.counter === 0) {
-          this.counter = this.orders.lenght;
+          this.counter = this.orders.length;
         }
         this.cdRef.detectChanges();
       }
@@ -126,6 +143,7 @@ export class OrdersComponent implements OnInit {
           duration: 2000,
           horizontalPosition: 'right'
         });
+        this.counter--;
       }
     );
   }
@@ -148,6 +166,7 @@ export class OrdersComponent implements OnInit {
           duration: 2000,
           horizontalPosition: 'right'
         });
+        this.counter--;
       }
     );
   }
