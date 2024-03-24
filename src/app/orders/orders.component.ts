@@ -12,6 +12,7 @@ export class OrdersComponent implements OnInit {
   orders: any = [];
   stornos: any;
   counter = 0;
+  stornoCounter = 0;
   revenue = 0;
   loading = false;
   constructor(
@@ -32,9 +33,16 @@ export class OrdersComponent implements OnInit {
     }, 30000);
   }
 
-  playSound(){
+  playNotificationSound(){
     let audio = new Audio();
     audio.src = "../../../assets/sound/notification.mp3";
+    audio.load();
+    audio.play();
+  }
+
+  playErrorSound(){
+    let audio = new Audio();
+    audio.src = "../../../assets/sound/error.mp3";
     audio.load();
     audio.play();
   }
@@ -101,7 +109,7 @@ export class OrdersComponent implements OnInit {
             duration: 2000,
             horizontalPosition: 'right'
           });
-          this.playSound();
+          this.playNotificationSound();
           this.counter = newOrders.length;
         }
         this.orders = JSON.parse(JSON.stringify(response.body));
@@ -116,9 +124,26 @@ export class OrdersComponent implements OnInit {
   getStornos() {
     this.orderService.getCanceledOrders().subscribe(
       response => {
+        let countStornos = 0;
+
         for (const order of response.body) {
           order.json = JSON.parse(order.json);
         }
+        let newStornos = [];
+        newStornos = JSON.parse(JSON.stringify(response.body));
+        for (let storno of newStornos){
+          if(this.getDurationInt(storno.created) <= 5){
+            countStornos++;
+          }
+        }
+        if (countStornos > this.stornoCounter) {
+          this.snackBar.open('Bestellung wurde storniert!', undefined, {
+            duration: 2000,
+            horizontalPosition: 'right'
+          });
+          this.playErrorSound();
+        }
+        this.stornoCounter = countStornos;
         this.stornos = JSON.parse(JSON.stringify(response.body));
         this.cdRef.detectChanges();
       }

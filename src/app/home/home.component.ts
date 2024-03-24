@@ -58,6 +58,14 @@ export class HomeComponent implements OnInit {
     this.cdRef.detectChanges();
   }
 
+  playThankYouSound(){
+    let audio = new Audio();
+    audio.src = "../../../assets/sound/thankyou.mp3";
+    audio.load();
+    audio.play();
+  }
+
+
   initForm() {
     this.reactiveForm = this.formBuilder.group({
       articles: this.formBuilder.array([]),
@@ -268,7 +276,6 @@ export class HomeComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.reactiveForm.value);
     this.reactiveForm.get('total')?.setValue(this.getTotalPrice());
     if (this.orderId > 0) {
       this.homeService.editOrder(this.reactiveForm.value, this.orderId).subscribe(response => {
@@ -300,6 +307,7 @@ export class HomeComponent implements OnInit {
         duration: 2000,
         horizontalPosition: 'right'
       });
+      this.playThankYouSound();
     }
   }
 
