@@ -1,5 +1,6 @@
-<p style="text-align:center;margin-top:20px;"><i class="fa-solid fa-mill-sign"></i>=Laktosefrei <i class="fa-solid fa-poop"></i>=Sahne </p>
-<i (click)="getOrders()"  class="fa-solid fa-arrows-rotate m-auto font-bold accent-green-700" style="font-size: 60px; margin: auto; display: block; width: 60px; cursor: pointer"  ></i>
+<p style="text-align:center;margin-top:20px;"><i class="fa-solid fa-mill-sign"></i>=Laktosefrei <i class="fa-solid fa-poop"></i>=Sahne <mat-slide-toggle (click)="mute = !mute">Mute</mat-slide-toggle>
+</p>
+<i (click)="getOrders();getStornos();"  class="fa-solid fa-arrows-rotate m-auto font-bold accent-green-700" style="font-size: 60px; margin: auto; display: block; width: 60px; cursor: pointer"  ></i>
 <div class="orders-list" *ngIf="!loading">
     <div class="order" *ngFor="let order of orders; let i=index">
         <h2 style="display: inline;">Bestellung #{{order.id}}</h2>

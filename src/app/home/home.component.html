@@ -92,10 +92,12 @@
     </div>
 </form>
 <div class="overview" [ngClass]="{'hide': !toggleOverview}">
-    <mat-slide-toggle style="margin-left: 40px;" (toggleChange)="toggleMe = !toggleMe">My</mat-slide-toggle>
+    <mat-slide-toggle style="margin-left: 40px;margin-top: 50px;" (toggleChange)="toggleMe = !toggleMe">My</mat-slide-toggle>
+    <mat-slide-toggle style="margin-left: 40px;margin-top: 50px;" (toggleChange)="mute = !mute">Mute</mat-slide-toggle>
     <i class="fa-sharp fa-solid fa-square-xmark" (click)="toggleOverview = !toggleOverview;"></i>
     <mat-button-toggle-group appearance="legacy" name="fontStyle" aria-label="Font Style" value="current">
         <mat-button-toggle value="current" (change)="getOrders()">Aktuell</mat-button-toggle>
+        <mat-button-toggle value="recntlyfinished" (change)="getMyFinishedOrders()">Abholbereit</mat-button-toggle>
         <mat-button-toggle value="finished" (change)="getOldOrders()">Bisher</mat-button-toggle>
         <mat-button-toggle value="canceled" (change)="getCanceledOrders()">Storniert</mat-button-toggle>
     </mat-button-toggle-group>

@@ -15,6 +15,7 @@ export class OrdersComponent implements OnInit {
   stornoCounter = 0;
   revenue = 0;
   loading = false;
+  mute = false;
   constructor(
     private orderService: OrderService,
     private cdRef: ChangeDetectorRef,
@@ -34,17 +35,17 @@ export class OrdersComponent implements OnInit {
   }
 
   playNotificationSound(){
-    let audio = new Audio();
-    audio.src = "../../../assets/sound/notification.mp3";
-    audio.load();
-    audio.play();
+      let audio = new Audio();
+      audio.src = "../../../assets/sound/notification.mp3";
+      audio.load();
+      audio.play();
   }
 
   playErrorSound(){
-    let audio = new Audio();
-    audio.src = "../../../assets/sound/error.mp3";
-    audio.load();
-    audio.play();
+      let audio = new Audio();
+      audio.src = "../../../assets/sound/error.mp3";
+      audio.load();
+      audio.play();
   }
 
   getDuration(date: Date): string {
@@ -112,7 +113,14 @@ export class OrdersComponent implements OnInit {
           this.playNotificationSound();
           this.counter = newOrders.length;
         }
+
         this.orders = JSON.parse(JSON.stringify(response.body));
+        let countOrders = this.orders.length;
+        for (countOrders -= 2; countOrders > -1; countOrders -= 1)
+        {
+          this.orders.push(this.orders[countOrders]);
+          this.orders.splice(countOrders, 1);
+        }
         if (this.counter === 0) {
           this.counter = this.orders.length;
         }

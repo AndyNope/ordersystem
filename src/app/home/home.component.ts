@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { OrderService } from '../orders/order.service';
 import { HomeService } from './home.service';
 import {forceAutocomplete} from "@angular/cli/src/utilities/environment-options";
+import {observeNotification} from "rxjs/internal/Notification";
 
 
 interface MenuOption {
@@ -28,7 +29,10 @@ export class HomeComponent implements OnInit {
   options: MenuOption[] = [];
   originalOptions: MenuOption[] = [];
   orders: any;
+  myFinishedOrders: any;
   orderId = 0;
+  mute = false;
+  counter = 0;
 
   toggleOverview = false;
   loading: boolean = false;
@@ -55,14 +59,26 @@ export class HomeComponent implements OnInit {
     if (localStorage.getItem('name') !== undefined) {
       this.reactiveForm.get('username')?.setValue(localStorage.getItem('name'));
     }
+    this.observeMyOrder();
     this.cdRef.detectChanges();
   }
 
   playThankYouSound(){
-    let audio = new Audio();
-    audio.src = "../../../assets/sound/thankyou.mp3";
-    audio.load();
-    audio.play();
+    if(!this.mute) {
+      let audio = new Audio();
+      audio.src = "../../../assets/sound/thankyou.mp3";
+      audio.load();
+      audio.play();
+    }
+  }
+
+  playFinishedSound(){
+    if(!this.mute) {
+      let audio = new Audio();
+      audio.src = "../../../assets/sound/finished.mp3";
+      audio.load();
+      audio.play();
+    }
   }
 
 
@@ -216,7 +232,6 @@ export class HomeComponent implements OnInit {
           order.json = JSON.parse(order.json);
         }
         this.orders = JSON.parse(JSON.stringify(response.body));
-        console.log(this.orders);
       }
     );
   }
@@ -311,6 +326,30 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  observeMyOrder(){
+
+    setInterval(() => {
+      this.orderService.getOldOrders().subscribe(
+        response => {
+          let countNewOrders = 0;
+          for (const order of response.body) {
+            order.json = JSON.parse(order.json);
+          }
+          for (const order of response.body){
+            if(this.getDurationInt(order.created) < 5 && this.getUsernameTyped() === order.json.username){
+              this.myFinishedOrders.push(order);
+              countNewOrders++;
+            }
+          }
+          if(countNewOrders > this.counter){
+            this.playFinishedSound();
+          }
+          this.counter = countNewOrders;
+        }
+      );
+    }, 10000);
+  }
+
   setOrder(index:number, option: any) {
     this.getArticles().at(index).get('name')?.setValue(option.name);
     this.getArticles().at(index).get('price')?.setValue(option.price );
@@ -330,5 +369,24 @@ export class HomeComponent implements OnInit {
     this.loading = false;
     this.cdRef.detectChanges();
     this.cdRef.markForCheck();
+  }
+
+  getMyFinishedOrders() {
+    this.orderService.getOldOrders().subscribe(
+      response => {
+        let newOrderlist = [];
+        for (const order of response.body) {
+          order.json = JSON.parse(order.json);
+        }
+        for (const order of response.body){
+          if(this.getDurationInt(order.created) < 10 && this.getUsernameTyped() === order.json.username){
+            newOrderlist.push(order)
+          }
+        }
+
+        this.orders = newOrderlist;
+      }
+    );
+    this.orders = this.myFinishedOrders;
   }
 }
